@@ -53,4 +53,9 @@ class PostControllerTest {
 
         Assertions.assertEquals(1L, postRepository.count());
     }
+
+    @DisplayName("게시글 조회")
+    @Test
+    void testPostQuery() {
+    }
 }
