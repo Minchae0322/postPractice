@@ -1,5 +1,6 @@
 package hodol.hodolpractice.controller;
 
+import hodol.hodolpractice.repository.Post;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.service.PostService;
 import jakarta.validation.Valid;
@@ -26,9 +27,15 @@ public class PostController {
 
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate params) {
+    public Post post(@RequestBody @Valid PostCreate params) {
         System.out.println();
-        postService.write(params);
-        return Map.of();
+        return postService.write(params);
     }
+
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name = "postId") Long postId) {
+        Post post = postService.getPost(postId);
+        return post;
+    }
+
 }
