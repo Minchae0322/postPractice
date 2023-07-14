@@ -1,6 +1,8 @@
 package hodol.hodolpractice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import hodol.hodolpractice.repository.Post;
 import hodol.hodolpractice.repository.PostRepository;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.service.PostService;
@@ -10,11 +12,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @AutoConfigureMockMvc
@@ -23,6 +27,8 @@ class PostControllerTest {
 
 
     @Autowired
+    private PostService postService;
+    //@Autowired
     private PostRepository postRepository;
     @Autowired
     private MockMvc mockMvc;
@@ -40,6 +46,8 @@ class PostControllerTest {
                 .content("내용입니다")
                 .build();
 
+        System.out.println("djdjdjdjdj" + postService);
+
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(postCreate);
 
@@ -56,6 +64,25 @@ class PostControllerTest {
 
     @DisplayName("게시글 조회")
     @Test
-    void testPostQuery() {
+    void testPostQuery() throws Exception{
+        //save
+        PostCreate postCreate = PostCreate.builder()
+                .title("글 조회를 위한")
+                .content("포스트입니다")
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(postCreate);
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print());
+        //get
+        Post post = postService.getPost(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print());
     }
 }

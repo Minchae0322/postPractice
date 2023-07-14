@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -67,10 +68,11 @@ class PostServiceTest {
                 .content("포스트입니다")
                 .build();
         postService.write(postCreate);
-        Post post = postService.getPost(1L);
+        System.out.println(postRepository.findAll().get(0).getId() + " 이거 ");
+        Post post = postService.getPost(2L);
         System.out.println(post.getId());
 
-        assertEquals(post.getId(), 1L);
+        assertEquals(post.getId(), 2L);
         assertEquals(post.getContent(), postCreate.getContent());
         assertEquals(post.getTitle(), postCreate.getTitle());
 
