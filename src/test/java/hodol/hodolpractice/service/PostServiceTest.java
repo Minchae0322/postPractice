@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.net.http.HttpResponse;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -60,7 +61,7 @@ class PostServiceTest {
         assertEquals(postCreate.getContent(), post.getContent());
     }
 
-    @DisplayName("글 조회")
+    @DisplayName("글 1개 조회")
     @Test
     void writePostAndQuery() throws Exception {
         PostCreate postCreate = PostCreate.builder()
@@ -75,6 +76,32 @@ class PostServiceTest {
         assertEquals(post.getId(), 2L);
         assertEquals(post.getContent(), postCreate.getContent());
         assertEquals(post.getTitle(), postCreate.getTitle());
+
+    }
+
+    @DisplayName("글 여러개 조회")
+    @Test
+    void writePostAndQueryAll() throws Exception {
+        PostCreate postCreate1 = PostCreate.builder()
+                .title("글 조회를 위한")
+                .content("포스트입니다1")
+                .build();
+        PostCreate postCreate2 = PostCreate.builder()
+                .title("글 조회를 위한")
+                .content("포스트입니다2")
+                .build();
+        PostCreate postCreate3 = PostCreate.builder()
+                .title("글 조회를 위한")
+                .content("포스트입니다3")
+                .build();
+        postService.write(postCreate1);
+        postService.write(postCreate2);
+        postService.write(postCreate3);
+        List<Post> posts = postService.getPostList();
+
+        assertEquals(posts.get(0).getId(), 1L);
+        assertEquals(posts.get(2).getContent(), postCreate3.getContent());
+        assertEquals(posts.get(1).getTitle(), postCreate2.getTitle());
 
     }
 }
