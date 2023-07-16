@@ -1,4 +1,4 @@
-package hodol.hodolpractice.repository;
+package hodol.hodolpractice.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

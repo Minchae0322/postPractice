@@ -1,14 +1,14 @@
 package hodol.hodolpractice.service;
 
-import hodol.hodolpractice.repository.Post;
+import hodol.hodolpractice.domain.Post;
 import hodol.hodolpractice.repository.PostRepository;
 import hodol.hodolpractice.request.PostCreate;
+import hodol.hodolpractice.response.PostResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +26,40 @@ public class PostService {
         return posts;
     }
 
-    public Post getPost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
-        return post;
+    public List<Post> writePostList(List<PostCreate> postCreates) {
+        List<Post> postList = postCreates.stream()
+                .map(postCreate -> Post.builder()
+                        .title(postCreate.getTitle())
+                        .content(postCreate.getTitle())
+                        .build())
+                        .toList();
+        postRepository.saveAll(postList);
+        return postList;
     }
 
-    public List<Post> getPostList() {
-        return postRepository.findAll();
+    public PostResponse getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
+
+        return PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+    }
+
+    public Long getFirstPostId() {
+        return postRepository.findAll().get(0).getId();
+    }
+
+    public List<PostResponse> getPostList() {
+        return postRepository.findAll()
+                .stream()
+                .map(post -> PostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .build()
+                ).collect(Collectors.toList());
     }
 }
