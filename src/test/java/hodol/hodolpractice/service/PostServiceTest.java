@@ -2,6 +2,8 @@ package hodol.hodolpractice.service;
 
 import hodol.hodolpractice.domain.Post;
 import hodol.hodolpractice.repository.PostRepository;
+import hodol.hodolpractice.repository.PostRepositoryImpl;
+import hodol.hodolpractice.request.PageSearch;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -72,7 +75,7 @@ class PostServiceTest {
 
     @DisplayName("글 여러개 조회")
     @Test
-    void writePostAndQueryAll() throws Exception {
+    void writePostAndQueryAll2() throws Exception {
         PostCreate postCreate1 = PostCreate.builder()
                 .title("글 조회를 위한 포스트입니다 글자수는 10글자입니다")
                 .content("포스트입니다1")
@@ -93,6 +96,24 @@ class PostServiceTest {
         assertEquals(posts.get(0).getId(), 1L);
         assertEquals(posts.get(2).getContent(), postCreate3.getContent());
         assertEquals(posts.get(1).getTitle(), "글 조회를 위한 포");
+
+    }
+
+    @DisplayName("글 여러개 조회")
+    @Test
+    void writePostAndQueryAll11() throws Exception {
+        List<Post> requestPosts = IntStream.range(0, 20)
+                .mapToObj(i -> Post.builder()
+                        .title("제목" + i)
+                        .content("내용" + i).build())
+                .toList();
+
+        //postRepository.saveAll(requestPosts);
+        //List<Post> posts = postRepository.getList(new PageSearch(1, 10));
+
+        //assertEquals(posts.size(), 10);
+        //assertEquals(posts.get(0).getTitle() , "제목 0");
+
 
     }
 }
