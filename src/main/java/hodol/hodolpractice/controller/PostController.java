@@ -19,6 +19,7 @@ public class PostController {
     private final PostService postService;
 
 
+
     @PostMapping("/posts")
     public PostResponse post(@RequestBody @Valid PostCreate params) {
         Post post = postService.write(params);

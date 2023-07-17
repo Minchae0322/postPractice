@@ -19,6 +19,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
                 .limit(pageSearch.getSize())
                 .offset((long) (pageSearch.getSize() - 1) * pageSearch.getPage())
                 .orderBy(QPost.post.id.desc())
-                .stream().toList();
+                .fetch();
     }
 }

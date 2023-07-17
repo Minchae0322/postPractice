@@ -1,7 +1,9 @@
 package hodol.hodolpractice.service;
 
 import hodol.hodolpractice.domain.Post;
+import hodol.hodolpractice.domain.PostEdit;
 import hodol.hodolpractice.repository.PostRepository;
+import hodol.hodolpractice.request.PageSearch;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
@@ -106,11 +108,37 @@ class PostServiceTest {
                         .content("내용" + i).build())
                 .toList();
 
-        //postRepository.saveAll(requestPosts);
-        //List<Post> posts = postRepository.getList(new PageSearch(1, 10));
+        postRepository.saveAll(requestPosts);
+        List<Post> posts = postRepository.getList(new PageSearch(1, 10));
 
-        //assertEquals(posts.size(), 10);
-        //assertEquals(posts.get(0).getTitle() , "제목 0");
+        assertEquals(posts.size(), 10);
+        assertEquals(posts.get(0).getTitle() , "제목10");
+
+
+    }
+
+    @DisplayName("글 변경")
+    @Test
+    void editPost() throws Exception {
+        List<Post> requestPosts = IntStream.range(0, 20)
+                .mapToObj(i -> Post.builder()
+                        .title("제목" + i)
+                        .content("내용" + i).build())
+                .toList();
+
+        postRepository.saveAll(requestPosts);
+        PostEdit postEdit = PostEdit.builder()
+                .title("메롱")
+                .content("바보")
+                .build();
+        postService.edit(requestPosts.get(0).getId(), postEdit);
+
+        Post post = postRepository.findById(requestPosts.get(0).getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다"));
+
+
+        assertEquals(post.getTitle(), "메롱");
+
 
 
     }

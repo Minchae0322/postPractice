@@ -1,6 +1,7 @@
 package hodol.hodolpractice.service;
 
 import hodol.hodolpractice.domain.Post;
+import hodol.hodolpractice.domain.PostEdit;
 import hodol.hodolpractice.repository.PostRepository;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
@@ -62,4 +63,19 @@ public class PostService {
                             .build()
                 ).collect(Collectors.toList());
     }
+
+    public PostResponse edit(Long postId, PostEdit postEdit) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다."));
+
+        post.edit(postEdit.getTitle(), postEdit.getContent());
+
+        postRepository.save(post);
+
+        return PostResponse.builder().id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+    }
+
 }
