@@ -2,8 +2,6 @@ package hodol.hodolpractice.service;
 
 import hodol.hodolpractice.domain.Post;
 import hodol.hodolpractice.repository.PostRepository;
-import hodol.hodolpractice.repository.PostRepositoryImpl;
-import hodol.hodolpractice.request.PageSearch;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
