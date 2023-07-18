@@ -1,6 +1,7 @@
 package hodol.hodolpractice.controller;
 
 import hodol.hodolpractice.domain.Post;
+import hodol.hodolpractice.domain.PostEdit;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
 import hodol.hodolpractice.service.PostService;
@@ -19,9 +20,14 @@ public class PostController {
     private final PostService postService;
 
 
+    @PostMapping("/posts/{postId}/edit")
+    public PostResponse postEdit(@PathVariable(name = "postId") Long postId, @RequestBody PostEdit postEdit) {
+        return postService.edit(postId, postEdit);
+    }
 
     @PostMapping("/posts")
     public PostResponse post(@RequestBody @Valid PostCreate params) {
+
         Post post = postService.write(params);
         return PostResponse.builder()
                 .id(post.getId())

@@ -1,6 +1,9 @@
 package hodol.hodolpractice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import hodol.hodolpractice.domain.Post;
+import hodol.hodolpractice.domain.PostEdit;
 import hodol.hodolpractice.repository.PostRepository;
 import hodol.hodolpractice.request.PostCreate;
 import hodol.hodolpractice.response.PostResponse;
@@ -152,7 +155,7 @@ class PostControllerTest {
     }
     @DisplayName("글 수정")
     @Test
-    void eidtPost() throws Exception{
+    void editPost() throws Exception{
         //save
         PostCreate postCreate = PostCreate.builder()
                 .title("123456789012345678")
@@ -166,13 +169,24 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print());
 
+        PostEdit postEdit = PostEdit.builder()
+                .title("메롱1111111111111111111")
+                .content("바보11111111111111111111")
+                .build();
 
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}",  postService.getFirstPostId())
-                        .contentType(MediaType.APPLICATION_JSON))
+        String editJson = objectMapper.writeValueAsString(postEdit);
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts/{postId}/edit", postService.getFirstPostId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(editJson))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("1234567890"))
                 .andDo(print());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", postService.getFirstPostId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("메롱11111111"))
+                .andDo(print());
+
 
     }
 }
