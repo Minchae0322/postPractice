@@ -189,4 +189,27 @@ class PostControllerTest {
 
 
     }
+
+    @DisplayName("글 삭제")
+    @Test
+    void deletePost() throws Exception{
+        //save
+        PostCreate postCreate = PostCreate.builder()
+                .title("123456789012345678")
+                .content("포스트입니다")
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(postCreate);
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/posts/{postId}", postService.getFirstPostId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print());
+
+    }
 }

@@ -78,4 +78,16 @@ public class PostService {
                 .build();
     }
 
+    public PostResponse delete(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다"));
+
+        PostResponse postResponse = PostResponse.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+        postRepository.delete(post);
+        return postResponse;
+    }
+
 }

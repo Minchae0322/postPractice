@@ -58,18 +58,17 @@ class PostServiceTest {
     @DisplayName("글 1개 조회")
     @Test
     void writePostAndQuery() throws Exception {
-        PostCreate postCreate = PostCreate.builder()
+        Post post = Post.builder()
                 .title("글 조회를 위한")
                 .content("포스트입니다")
                 .build();
-        postService.write(postCreate);
-        System.out.println(postRepository.findAll().get(0).getId() + " 이거 ");
-        PostResponse post = postService.getPost(2L);
-        System.out.println(post.getId());
+        postRepository.save(post);
 
-        assertEquals(post.getId(), 2L);
-        assertEquals(post.getContent(), postCreate.getContent());
-        assertEquals(post.getTitle(), postCreate.getTitle());
+
+        PostResponse post1 = postService.getPost(post.getId());
+        assertEquals(post.getId(), post1.getId());
+        assertEquals(post.getContent(), post1.getContent());
+        assertEquals(post.getTitle(), post1.getTitle());
 
     }
 
@@ -139,6 +138,23 @@ class PostServiceTest {
 
         assertEquals(post.getTitle(), "메롱");
 
+
+
+    }
+
+    @DisplayName("글 삭제")
+    @Test
+    void deletePost() throws Exception {
+        Post post = Post.builder()
+                .title("글 조회를 위한 포스트입니다 글자수는 10글자입니다")
+                .content("포스트입니다1")
+                .build();
+
+        postRepository.save(post);
+
+        postService.delete(post.getId());
+
+        assertEquals(postRepository.count(), 0);
 
 
     }
